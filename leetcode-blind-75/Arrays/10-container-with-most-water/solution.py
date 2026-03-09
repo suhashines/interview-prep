@@ -39,4 +39,4 @@ def optimal(a:list):
 
 a=[1,2,4,3]
 print(brute(a))
-print(optimal(a))
+print(optimal(a)) 
