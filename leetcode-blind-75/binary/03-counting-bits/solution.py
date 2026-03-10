@@ -35,6 +35,18 @@ def optimal(num:int)->list:
         
     return ans 
 
+def optimal_2(n:int)->list:
+
+    ans = [0]*(n+1)
+
+    for i in range(1,n+1):
+
+        ans[i] = ans[i//2] + (i&1)
+
+    return ans
+
+
 print(better(10))
 
 print(optimal(10))
+print(optimal_2(10))
