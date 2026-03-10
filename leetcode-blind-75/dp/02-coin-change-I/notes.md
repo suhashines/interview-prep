@@ -35,3 +35,35 @@ def coinChange(coins, amount):
     # If dp[amount] is still amount + 1, it means we cannot make up that amount
     return dp[amount] if dp[amount] != amount + 1 else -1
 ```
+
+## Top-Down Approach
+- We can also solve this problem using a top-down approach with memoization. We will define a recursive function that takes the remaining amount as an argument and returns the minimum number of coins needed to make up that amount. We will use a dictionary to store the results of previously computed amounts to avoid redundant calculations.
+
+### Caveat
+- The top-down approach can lead to a large number of recursive calls, especially for larger amounts, which may result in a stack overflow. The bottom-up approach is generally more efficient for this problem as it avoids the overhead of recursive calls and is easier to understand.
+
+```python
+def coinChange(coins, amount):
+    memo = {}
+    
+    def helper(remaining):
+        # Base case: if remaining is 0, no coins are needed
+        if remaining == 0:
+            return 0
+        # If remaining is negative, return a large number to indicate it's not possible
+        if remaining < 0:
+            return float('inf')
+        # Check if the result for the current remaining amount is already computed
+        if remaining in memo:
+            return memo[remaining]
+        
+        min_coins = float('inf')
+        for coin in coins:
+            min_coins = min(min_coins, helper(remaining - coin) + 1)
+        
+        memo[remaining] = min_coins
+        return min_coins
+    
+    result = helper(amount)
+    return result if result != float('inf') else -1
+```

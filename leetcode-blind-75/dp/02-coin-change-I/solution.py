@@ -1,12 +1,18 @@
+import sys
+
+# top-down approach with memoization
+
 def min_number_of_coins(amount:int,coins:list[int]):
 
     n = len(coins) 
 
     dp = [[-1] * (amount + 1) for _ in range(n + 1)]
 
+    sys.setrecursionlimit(5000)
+
     ans = helper(amount,coins,dp,n)
 
-    print(f"after helper dp: {dp}")
+    # print(f"after helper dp: {dp}")
 
     if(ans!=float('inf')):
         return ans
@@ -45,6 +51,22 @@ def helper(amt:int,coins:list[int],dp:list[list[int]],n:int):
 
     return dp[n][amt]
 
+def bottom_up(amt:int,coins:list[int])->int:
+
+    dp = [(float('inf'))]*(amt+1)
+
+    # base case
+
+    dp[0] = 0
+
+    for coin in coins:
+
+        for i in range(coin,amt+1):
+
+            dp[i] = min(dp[i],1+dp[i-coin])
+    
+    return dp[amt] if dp[amt]!=float('inf') else -1
+
 print(min_number_of_coins(11,[1,2,5]))
 print(min_number_of_coins(3,[2]))
-print(min_number_of_coins(10,[9,2]))
+print(min_number_of_coins(5000,[10,2]))
