@@ -37,10 +37,10 @@ def memoization(str1:str,str2:str)->int:
         
         elif(dp[n][m]==dp[n-1][m]):
 
-            # we came from the top
+            # we came from the top cell
             print_LCS(dp,n-1,m)
         else:
-            # we came from the left
+            # we came from the left cell
             print_LCS(dp,n,m-1)
 
     lcs = LCS(n,m)    
@@ -49,7 +49,7 @@ def memoization(str1:str,str2:str)->int:
     return lcs
 
 
-str1 = "daenyris stormborn"
-str2 = "protector of the realm" 
+str1 = "abcde"
+str2 = "bdgek" 
 
 print(memoization(str1,str2))
