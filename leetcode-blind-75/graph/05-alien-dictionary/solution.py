@@ -1,48 +1,22 @@
-import queue
-
-class Graph:
-    def __init__(self):
-        self.graph = {}
-
-    def add_undirected_edge(self, u, v):
-        if u not in self.graph:
-            self.graph[u] = []
-        if v not in self.graph:
-            self.graph[v] = []
-        self.graph[u].append(v)
-        self.graph[v].append(u)
-    
-    def add_directed_edge(self, u, v):
-        if u not in self.graph:
-            self.graph[u] = []
-        if v not in self.graph:
-            self.graph[v] = []
-        self.graph[u].append(v)
-
-
-    def get_neighbors(self, node):
-        return self.graph.get(node, [])
-
-    def print_graph(self):
-
-        for node in self.graph:
-
-            print(f"{node}->",end="")
-
-            for v in self.get_neighbors(node):
-
-                print(f"{v}",end=" ")
-            print()
-    
-
+from collections import defaultdict,deque
 
 def alien_dictionary(dict:list[list[str]],K:int,n:int)->str:
 
     # construct the graph
 
-    g = Graph()
+    g = defaultdict(set)
+    # default dictionary has the provision that
+    # if a key doesn't exist it will create that with an empty set
 
     in_degree_map = {}
+
+    # initialize the in_degree_map
+
+    for w in dict:
+
+        for ch in w:
+
+            in_degree_map[ch] = 0
 
     for i in range(n-1):
 
@@ -54,20 +28,14 @@ def alien_dictionary(dict:list[list[str]],K:int,n:int)->str:
         k = 0
         while(k<min_length):
 
-            if s1[k]!= s2[k]:
+            if s1[k]!= s2[k] and s2[k] not in g[s1[k]]:
 
                 # add a directed edge from s1[k],s2[k]
-                g.add_directed_edge(s1[k],s2[k])
+                g[s1[k]].add(s2[k])
 
                 # track the in degrees
+                in_degree_map[s2[k]] += 1
 
-                if s1[k] not in in_degree_map:
-                    in_degree_map[s1[k]] = 0
-
-                if s2[k] not in in_degree_map:
-                    in_degree_map[s2[k]] = 1
-                else:
-                    in_degree_map[s2[k]] += 1
                 break
             k += 1
         
@@ -75,7 +43,7 @@ def alien_dictionary(dict:list[list[str]],K:int,n:int)->str:
             # invalid dictionary
             return ""
     
-    g.print_graph()
+    # g.print_graph()
 
     print(f"in degree map: {in_degree_map}")
     
@@ -83,7 +51,7 @@ def alien_dictionary(dict:list[list[str]],K:int,n:int)->str:
 
     def kahns_algorithm():
 
-        q = queue.Queue()
+        q = deque()
 
         order = []
 
@@ -93,22 +61,20 @@ def alien_dictionary(dict:list[list[str]],K:int,n:int)->str:
 
             if in_degree_map[node] == 0 :
                 visited[node] = 1
-                q.put(node)
+                q.append(node)
         
-        while not q.empty() :
+        while q :
 
-            u = q.get()
+            u = q.popleft()
 
-            for v in g.get_neighbors(u):
+            for v in g[u]:
+
+                in_degree_map[v] -= 1
 
                 if v not in visited:
-
                     visited[v] = 1
-
-                    in_degree_map[v] -= 1
-
                     if in_degree_map[v] == 0:
-                        q.put(v)
+                        q.append(v)
             # append u to the order array
             order.append(u)        
 
@@ -119,10 +85,9 @@ def alien_dictionary(dict:list[list[str]],K:int,n:int)->str:
     if len(topo_order) != K :
         return ""
     
-    return str(topo_order)
+    return "".join(topo_order)
 
-words = ["z","x"]
-N=2 
-K=2
+words = ["za","zb","ca","cb"]
+K=4
 
-print(alien_dictionary(words,N,K))
+print(alien_dictionary(words,K,len(words)))
